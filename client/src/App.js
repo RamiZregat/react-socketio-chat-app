@@ -9,17 +9,30 @@ function App() {
   const [username, setUsername] = useState("");
   const [room, setRoom] = useState("");
   const [showChat, setShowChat] = useState(false);
+  const [showEmergency, setShowEmergency] = useState(true);
+  const [showForm, setShowForm] = useState(true);
 
   const joinRoom = () => {
     if (username !== "" && room !== "") {
       socket.emit("join_room", room);
       setShowChat(true);
+      setShowForm(false)
     }
   };
 
   return (
+    <>
     <div className="App">
-      {!showChat ? (
+      {showEmergency ? (
+        <button
+        class='emergencybtn'
+          onClick={() => {
+            setShowEmergency(false);
+          }}
+        >
+          Emergancy
+        </button>
+      ) : showForm? (
         <div className="joinChatContainer">
           <h3>Join A Chat</h3>
           <input
@@ -36,12 +49,14 @@ function App() {
               setRoom(event.target.value);
             }}
           />
-          <button onClick={joinRoom}>Join A Room</button>
+          <button class='joinroombtn' onClick={joinRoom}>Join A Room</button>
         </div>
-      ) : (
+      ): null}
+      {showChat ? (
         <Chat socket={socket} username={username} room={room} />
-      )}
-    </div>
+      ) : null}
+      </div>
+    </>
   );
 }
 
